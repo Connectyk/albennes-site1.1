@@ -864,6 +864,64 @@
   }
 
   /* ---------- REALISATIONS ---------- */
+  .gallery{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:16px;
+    max-width:900px;
+    margin:18px auto 0;
+  }
+  .g-item{
+    position:relative;
+    border-radius:10px;
+    overflow:hidden;
+    background:var(--black);
+    box-shadow:0 10px 24px rgba(0,0,0,.12);
+  }
+  .g-item img{
+    width:100%;
+    aspect-ratio:3/4;
+    object-fit:cover;
+    display:block;
+    cursor:zoom-in;
+    transition:transform .3s ease;
+  }
+  .g-item:hover img{transform:scale(1.04);}
+  .g-item figcaption{
+    position:absolute;left:0;right:0;bottom:0;
+    padding:26px 12px 10px;
+    background:linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,.85));
+    color:var(--white);
+    font-family:'Barlow Condensed',sans-serif;
+    font-weight:600;
+    letter-spacing:.03em;
+    font-size:.88rem;
+    pointer-events:none;
+  }
+  .real-card img{cursor:zoom-in;}
+  .lightbox{
+    position:fixed;inset:0;z-index:100;
+    background:rgba(0,0,0,.92);
+    display:none;
+    align-items:center;justify-content:center;
+    padding:24px;
+  }
+  .lightbox.open{display:flex;}
+  .lightbox img{
+    max-width:100%;max-height:100%;
+    border-radius:6px;
+  }
+  .lb-close{
+    position:absolute;top:14px;right:18px;
+    background:none;border:0;
+    color:var(--white);
+    font-size:2.4rem;line-height:1;
+    cursor:pointer;
+  }
+  @media (max-width:900px){
+    .gallery{grid-template-columns:repeat(2,1fr);}
+  }
+
   .real-card{
     position:relative;
     border-radius:12px;
@@ -1107,18 +1165,41 @@
   <div class="wrap">
     <div class="section-head">
       <p class="eyebrow">Nos réalisations</p>
-      <h2 class="display">Un chantier récent sur Dijon</h2>
-      <p>Nos bennes interviennent aussi bien sur des chantiers de particuliers que sur des sites commerciaux et professionnels.</p>
+      <h2 class="display">Nos chantiers récents à Dijon et alentours</h2>
+      <p>Nos bennes interviennent aussi bien chez les particuliers que sur des chantiers et des sites commerciaux. Quelques exemples de nos interventions.</p>
     </div>
     <div class="real-card">
-      <img src="chantier-toison-dor.jpg" alt="Benne AL BENNES lors d'un débarras au centre commercial de la Toison d'Or à Dijon" loading="lazy">
+      <img src="chantier-toison-dor.jpg" alt="Benne AL BENNES lors d'un débarras au centre commercial de la Toison d'Or à Dijon" loading="lazy" data-zoom>
       <div class="real-caption">
         <span class="loc">📍 Centre commercial La Toison d'Or – Dijon</span>
         <p>Enlèvement de déchets et débarras sur site commercial</p>
       </div>
     </div>
+    <div class="gallery">
+      <figure class="g-item">
+        <img src="benne-particulier-dijon.jpg" alt="Benne de chantier posée devant une habitation chez un particulier près de Dijon" loading="lazy" data-zoom>
+        <figcaption>Chantier chez un particulier</figcaption>
+      </figure>
+      <figure class="g-item">
+        <img src="evacuation-terre-gravats-dijon.jpg" alt="Évacuation de terre et de gravats avec une benne AL BENNES sur chantier" loading="lazy" data-zoom>
+        <figcaption>Évacuation de terre et gravats</figcaption>
+      </figure>
+      <figure class="g-item">
+        <img src="benne-quetigny-nuit.jpg" alt="Benne AL BENNES sur bâche de protection au centre commercial de Quetigny" loading="lazy" data-zoom>
+        <figcaption>📍 Centre commercial de Quetigny</figcaption>
+      </figure>
+      <figure class="g-item">
+        <img src="camion-ampliroll-quetigny.jpg" alt="Camion ampliroll AL BENNES lors d'un chargement de benne au centre commercial de Quetigny" loading="lazy" data-zoom>
+        <figcaption>📍 Centre commercial de Quetigny</figcaption>
+      </figure>
+    </div>
   </div>
 </section>
+
+<div class="lightbox" id="lightbox" aria-hidden="true">
+  <button type="button" class="lb-close" aria-label="Fermer">&times;</button>
+  <img src="" alt="">
+</div>
 
 <!-- EPAVES / FERRAILLE -->
 <div class="strip">
@@ -1306,6 +1387,27 @@
 
 <script>
   document.getElementById('year').textContent = new Date().getFullYear();
+
+
+  // Lightbox photos
+  var lb = document.getElementById('lightbox');
+  if(lb){
+    var lbImg = lb.querySelector('img');
+    document.querySelectorAll('img[data-zoom]').forEach(function(img){
+      img.addEventListener('click', function(){
+        lbImg.src = img.src;
+        lbImg.alt = img.alt;
+        lb.classList.add('open');
+        lb.setAttribute('aria-hidden','false');
+      });
+    });
+    function closeLb(){
+      lb.classList.remove('open');
+      lb.setAttribute('aria-hidden','true');
+    }
+    lb.addEventListener('click', closeLb);
+    document.addEventListener('keydown', function(e){ if(e.key === 'Escape'){ closeLb(); } });
+  }
 
   // FAQ accordion
   document.querySelectorAll('.faq-item').forEach(function(item){
